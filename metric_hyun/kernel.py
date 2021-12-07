@@ -78,7 +78,7 @@ class CannyFilter(nn.Module):
                                          padding=k_gaussian // 2,
                                          bias=False)
         self.gaussian_filter.requires_grad=False
-        self.gaussian_filter.weight = nn.Parameter(torch.from_numpy(gaussian_2D))
+        self.gaussian_filter.weight = nn.Parameter(torch.from_numpy(gaussian_2D).reshape(self.gaussian_filter.weight.shape).float())
 
         # sobel
 
@@ -88,7 +88,7 @@ class CannyFilter(nn.Module):
                                         kernel_size=k_sobel,
                                         padding=k_sobel // 2,
                                         bias=False)
-        self.sobel_filter_x.weight = nn.Parameter(torch.from_numpy(sobel_2D))
+        self.sobel_filter_x.weight = nn.Parameter(torch.from_numpy(sobel_2D).reshape(self.sobel_filter_x.weight.shape).float())
 
 
         self.sobel_filter_y = nn.Conv2d(in_channels=1,
@@ -96,7 +96,7 @@ class CannyFilter(nn.Module):
                                         kernel_size=k_sobel,
                                         padding=k_sobel // 2,
                                         bias=False)
-        self.sobel_filter_y.weight = nn.Parameter(torch.from_numpy(sobel_2D.T))
+        self.sobel_filter_y.weight = nn.Parameter(torch.from_numpy(sobel_2D.T).reshape(self.sobel_filter_y.weight.shape).float())
 
 
         # thin
@@ -109,7 +109,7 @@ class CannyFilter(nn.Module):
                                             kernel_size=thin_kernels[0].shape,
                                             padding=thin_kernels[0].shape[-1] // 2,
                                             bias=False)
-        self.directional_filter.weight= nn.Parameter(torch.from_numpy(directional_kernels).reshape(self.directional_filter.weight.shape))
+        self.directional_filter.weight= nn.Parameter(torch.from_numpy(directional_kernels).reshape(self.directional_filter.weight.shape).float())
 
         # hysteresis
 
@@ -119,7 +119,7 @@ class CannyFilter(nn.Module):
                                     kernel_size=3,
                                     padding=1,
                                     bias=False)
-        self.hysteresis.weight = nn.Parameter(torch.from_numpy(hysteresis))
+        self.hysteresis.weight = nn.Parameter(torch.from_numpy(hysteresis).reshape(self.hysteresis.weight.shape).float())
 
 
     def forward(self, img, low_threshold=None, high_threshold=None, hysteresis=False):
